@@ -5,6 +5,17 @@ type Instruction =
     | Acc of int
     | Jmp of int
 
+type Code = Map<int, Instruction>
+
+type State = {
+    nextLine     : int
+    acc          : int 
+    visitedLines : int Set }
+
+module State =
+    let initial = { nextLine = 0; acc = 0; visitedLines = Set.empty }
+    let getAcc s = s.acc
+
 let toTuple = function
     | a::b::[] -> a, b
     | x        -> failwithf "cant make tuple of %A" x
@@ -24,14 +35,6 @@ let parse (input:string) =
     |> List.indexed
     |> Map
 
-type State = {
-    nextLine     : int
-    acc          : int 
-    visitedLines : int Set }
-
-module State =
-    let initial = { nextLine = 0; acc = 0; visitedLines = Set.empty }
-
 let step code s =
     let dLine, dAcc =
         match code |> Map.find s.nextLine with
@@ -43,13 +46,37 @@ let step code s =
         nextLine = s.nextLine + dLine
         acc = s.acc + dAcc }
 
-let private loopOccured s =
-    s.visitedLines.Contains s.nextLine
+let loopOccured s = s.visitedLines.Contains s.nextLine
 
 let private tryStep code s =
     if loopOccured s then None
-    else Some (s.acc, step code s)
+    else Some (s, step code s)
 
-let solve input =
-    Seq.unfold (parse input |> tryStep) State.initial
-    |> Seq.last
+let rawSolve code = Seq.unfold (tryStep code) State.initial |> Seq.last
+
+let lastLine (code:Code) = (code |> Seq.map (fun k -> k.Key) |> Seq.max)
+
+let appendLoop (code:Code) = code.Add(lastLine code + 1, Jmp 0)
+
+let terminates (code:Code) = (rawSolve code).nextLine = lastLine code
+
+let variants (code:Code) : Code seq =
+    code |> Seq.choose (fun kvp ->
+        match kvp.Key, kvp.Value with
+        | l, Jmp x -> Some (code.Add(l, Nop x))
+        | l, Nop x -> Some (code.Add(l, Jmp x))
+        | _        -> None)
+
+let solve =
+    parse
+    >> rawSolve
+    >> State.getAcc
+
+let solve2 =
+    parse
+    >> variants
+    >> Seq.map appendLoop
+    >> Seq.find terminates
+    >> rawSolve
+    >> State.getAcc
+

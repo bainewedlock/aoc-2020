@@ -5,8 +5,23 @@ open Solution
 open Demoinput
 
 [<Tests>]
+let solve2Tests =
+    testList "solve2" [
+        test "solve2 demoinput" { solve2 demoinput =! 8 }
+        test "variants" {
+            let vs = variants democode |> Seq.toList
+            vs.Length =! 4
+            vs.[0] |> Map.find 0 =! Jmp 0
+            vs.[1] |> Map.find 2 =! Nop 4
+            vs.[2] |> Map.find 4 =! Nop -3
+            vs.[3] |> Map.find 7 =! Nop -4 }
+        test "allow loop at end" { parse "nop 0
+                                          jmp 0" |> terminates =! true }
+        test "demoinput"   { parse demoinput |> terminates =! false } ]
+
+[<Tests>]
 let solveTests =
-    testList "step" [
+    testList "solve" [
         test "solve demoinput" {
             solve demoinput =! 5 }
         test "step democode" {

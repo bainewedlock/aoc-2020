@@ -9,4 +9,9 @@ let main argv =
     |> printfn "Solution: %d"
     printfn "(must be 1586)"
 
+    File.ReadAllText "input.txt"
+    |> solve2
+    |> printfn "Solution: %d"
+    printfn "(must be 703)"
+
     0
