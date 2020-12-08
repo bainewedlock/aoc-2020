@@ -9,8 +9,7 @@ open Demoinput
 [<Tests>]
 let solve2Tests =
     testList "solve2" [
-        test "demoinput" {
-            solve2 demoinput =! 32 }
+        test "demoinput" { solve2 demoinput |> List.sumBy fst =! 32 }
         test "demoinput #2" {
             "shiny gold bags contain 2 dark red bags.
              dark red bags contain 2 dark orange bags.
@@ -19,7 +18,7 @@ let solve2Tests =
              dark green bags contain 2 dark blue bags.
              dark blue bags contain 2 dark violet bags.
              dark violet bags contain no other bags."
-            |> solve2 =! 126 } ]
+            |> solve2 |> List.sumBy fst =! 126 } ]
 
 [<Tests>]
 let graph2Tests =

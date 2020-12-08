@@ -67,18 +67,11 @@ let graph2 (input:string) =
     |> List.map (fun x -> x.bag, x.content)
     |> Map
 
-let preSolve2 needle input =
-    let g = graph2 input
-    let look (factor, bag) =
-        g.TryFind bag
-        |> Option.get
-        |> List.map (fun (innterFactor, inner) -> factor*innterFactor, inner )
-    discover look needle
-
 let solve2 input =
-    let needle = 1, "shiny gold"
-    let sum = preSolve2 needle input |> Seq.sumBy fst
-    let needleCount = fst needle
-    sum - needleCount
-
-
+    let g = graph2 input
+    let rec loop (factor:int, bag:string) = [
+        yield factor, bag
+        if g.ContainsKey bag then
+            for innerFactor, innerBag in g.Item bag do
+                yield! loop (factor * innerFactor, innerBag) ]
+    loop (1, "shiny gold") |> List.tail

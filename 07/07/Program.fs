@@ -8,12 +8,12 @@ let main argv =
     |> solve
     |> Set.count
     |> printfn "solution: %d"
-    printfn "(must be 337)"
+    printfn "(accepted answer: 337)"
 
     File.ReadAllText "input.txt"
     |> solve2
+    |> List.sumBy fst
     |> printfn "solution 2: %d"
-    printfn "(48888 is too low)"
-    printfn "(48889 is too low)"
+    printfn "(accepted answer: 50100)"
 
     0
