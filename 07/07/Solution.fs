@@ -61,3 +61,24 @@ let solve input =
     |> Set
     |> Set.remove needle
 
+let graph2 (input:string) =
+    input
+    |> parse
+    |> List.map (fun x -> x.bag, x.content)
+    |> Map
+
+let preSolve2 needle input =
+    let g = graph2 input
+    let look (factor, bag) =
+        g.TryFind bag
+        |> Option.get
+        |> List.map (fun (innterFactor, inner) -> factor*innterFactor, inner )
+    discover look needle
+
+let solve2 input =
+    let needle = 1, "shiny gold"
+    let sum = preSolve2 needle input |> Seq.sumBy fst
+    let needleCount = fst needle
+    sum - needleCount
+
+

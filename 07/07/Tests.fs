@@ -1,9 +1,35 @@
 ﻿module Tests
 
+open System.IO
 open Swensen.Unquote
 open Expecto
 open Solution
 open Demoinput
+
+[<Tests>]
+let solve2Tests =
+    testList "solve2" [
+        test "demoinput" {
+            solve2 demoinput =! 32 }
+        test "demoinput #2" {
+            "shiny gold bags contain 2 dark red bags.
+             dark red bags contain 2 dark orange bags.
+             dark orange bags contain 2 dark yellow bags.
+             dark yellow bags contain 2 dark green bags.
+             dark green bags contain 2 dark blue bags.
+             dark blue bags contain 2 dark violet bags.
+             dark violet bags contain no other bags."
+            |> solve2 =! 126 } ]
+
+[<Tests>]
+let graph2Tests =
+    testList "graph2" [
+        test "demoinput" {
+            let g = graph2 demoinput
+            g.Item "light red" =! [
+                1, "bright white"
+                2, "muted yellow" ]
+            g.Count =! 9 } ]
 
 [<Tests>]
 let solveTests =
@@ -40,10 +66,15 @@ let graphTests =
 [<Tests>]
 let parseTests =
     testList "parse" [
-        test "parse input" {
+        test "input count" {
+            File.ReadAllText "input.txt"
+            |> parse
+            |> List.length
+                =! 594 }
+        test "demoinput" {
             let records = parse demoinput
             records.Length =! 9 }
-        test "parse line" {
+        test "line" {
             parseLine "faded blue bags contain no other bags." =!
                 { bag = "faded blue"; content = [] }
             parseLine ("light red bags contain 1 bright white bag," +
