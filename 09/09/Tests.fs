@@ -6,10 +6,11 @@ open Expecto
 open Solution
 open Demoinput
 
-
 [<Tests>]
 let allTests =
     testList "all" [
+        testList "solve2" [
+            test "demoinput" { solve2 127L demoinput =! (15L, 47L) } ]
         testList "solve" [
             test "demoinput" { solve 5 demoinput =! 127L } ]
 

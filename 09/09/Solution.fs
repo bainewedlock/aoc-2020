@@ -69,3 +69,22 @@ let solve preambleSize input =
     let preamble = values |> List.take preambleSize |> Preamble.fromList
     loop preamble (values |> List.skip preambleSize)
 
+let solve2 target input =
+    let m = parse input |> List.indexed |> Map
+    let iterate (a, b) = seq { a .. b } |> Seq.map (m.TryFind >> Option.get)
+    let rec moveCeiling (floor, ceil) =
+        match iterate (floor, ceil) |> Seq.sum with
+        | sum when sum = target -> floor, ceil
+        | sum when sum > target -> moveFloor (floor, ceil)
+        | _                     -> moveCeiling (floor, ceil+1)
+    and moveFloor (floor, ceil) =
+        match floor+1, ceil with
+        | f, c when f = c -> f, c + 1
+        | f, c            -> f, c
+        |> moveCeiling
+    let f, c = moveFloor (-1, 0)
+    let min = iterate (f, c) |> Seq.min
+    let max = iterate (f, c) |> Seq.max
+    min, max
+
+
