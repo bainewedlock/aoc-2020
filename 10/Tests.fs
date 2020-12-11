@@ -19,11 +19,9 @@ let all =
             test "simple cases" {
                 analyze [1; 3; 4; 6] =! [2]
                 analyze [1; 3; 5] =! []
-                analyze [0;1;2;4;5;10] =! [2;3] }
-        ]
+                analyze [0;1;2;4;5;10] =! [2;3] } ]
         testList "solve" [
-            test "demoinput" { solve demoinput =! (7, 5) }
-            test "demoinput2" { solve demoinput2 =! (22, 10) } ]
-    ]
+            test "demoinput"  { solve demoinput =! (7, 5) }
+            test "demoinput2" { solve demoinput2 =! (22, 10) } ] ]
 
 
