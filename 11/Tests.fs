@@ -7,13 +7,62 @@ open Expecto
 open Solution
 open Demoinput
 
-
 [<Tests>]
 let all =
     testList "all" [
-        testList "solve" [
-            test "demoinput" { solve demoinput =! 37 }
-        ]
+        testList "solve2" [
+            test "step2" {
+                "#.##.##.##
+                 #######.##
+                 #.#.#..#..
+                 ####.##.##
+                 #.##.##.##
+                 #.#####.##
+                 ..#.#.....
+                 ##########
+                 #.######.#
+                 #.#####.##"
+                |> parse
+                |> step2
+                |> Grid.print =! [
+                    "#.LL.LL.L#"
+                    "#LLLLLL.LL"
+                    "L.L.L..L.."
+                    "LLLL.LL.LL"
+                    "L.LL.LL.LL"
+                    "L.LLLLL.LL"
+                    "..L.L....."
+                    "LLLLLLLLL#"
+                    "#.LLLLLL.L"
+                    "#.LLLLL.L#"] }
+            test "demoinput" { solve2 demoinput =! 26 } ]
+        testList "adjacent2" [
+            test "raytrace 2" {
+                parse "#....
+                       ...L.
+                       ..!..
+                       .....
+                       ....#"
+                |> raytrace (2,2)
+                |> Set =! Set [
+                    4, 4, '#'
+                    3, 1, 'L'
+                    0, 0, '#'] }
+            test "raytrace nothing" {
+                parse ".#.#.
+                       #...#
+                       ..!..
+                       #...#
+                       .#.#."
+                |> raytrace (2,2)
+                |> Set =! Set [] }
+            test "example 2" {
+                parse "?..
+                       .L.
+                       ..#"
+                |> analyzeCell2 (0, 0)
+                    =! { content = '?'; occupiedNeighbours = 0 } } ]
+        testList "solve" [ test "demoinput" { solve demoinput =! 37 } ]
         testList "parse" [
             test "demoinput" {
                 let g = parse demoinput
@@ -36,12 +85,15 @@ let all =
                 analyzeCell (1,1) g =! { content='#'; occupiedNeighbours=2 }
                 analyzeCell (1,0) g =! { content='L'; occupiedNeighbours=3 } }
             test "rule #1" {
-                nextCellState { content='L'; occupiedNeighbours=0 } =! '#' }
+                nextCellState 4 { content='L'; occupiedNeighbours=0 } =! '#' }
             test "rule #2" {
-                nextCellState { content='#'; occupiedNeighbours=4 } =! 'L' }
+                nextCellState 4 { content='#'; occupiedNeighbours=4 } =! 'L' }
             test "rule #3 (default)" {
-                nextCellState { content='L'; occupiedNeighbours=1 } =! 'L'
-                nextCellState { content='#'; occupiedNeighbours=3 } =! '#' }
+                nextCellState 4 { content='L'; occupiedNeighbours=1 } =! 'L'
+                nextCellState 4 { content='#'; occupiedNeighbours=3 } =! '#' }
+            test "rule #2 step 2" {
+                nextCellState 5 { content='#'; occupiedNeighbours=5 } =! 'L'
+                nextCellState 5 { content='#'; occupiedNeighbours=4 } =! '#' }
             test "demoinput" {
                 demolines |> step |> Grid.print =! [
                     "#.##.##.##"
