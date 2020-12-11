@@ -7,28 +7,20 @@ open Expecto
 open Solution
 open Demoinput
 
-// possible combinations for 1 jolt diff:
-// 
-//          3 1 3
-//         1 4 5 8
-//         -> 1 variante
-// 
-//         3 1 1 3
-//        1 4 5 6 9
-//        -> v1: alles
-//        -> v2: 5 raus
-// 
-//         3 1 1 1 3
-//        1 4 5 6 7 10
-//        -> v1: alles
-//        -> v2: 5 raus
-//        -> v3: 6 raus
-//        -> v4: 5+6 raus
-
-
 [<Tests>]
 let all =
     testList "all" [
+        testList "solve2" [
+            test "demoinput"  { solve2 demoinput  =! 8L }
+            test "demoinput2" { solve2 demoinput2 =! 19208L } ]
+        testList "analyze 1er chains" [
+            test "demoinput" {
+                parse demoinput |> Seq.toList |> analyze =! [2; 3; 4] }
+            test "simple cases" {
+                analyze [1; 3; 4; 6] =! [2]
+                analyze [1; 3; 5] =! []
+                analyze [0;1;2;4;5;10] =! [2;3] }
+        ]
         testList "solve" [
             test "demoinput" { solve demoinput =! (7, 5) }
             test "demoinput2" { solve demoinput2 =! (22, 10) } ]
