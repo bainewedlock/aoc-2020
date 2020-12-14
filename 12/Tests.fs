@@ -13,41 +13,37 @@ let all =
         testList "solve" [
             test "demoinput" { solve demoinput =! (17, -8, 25) } ]
         testList "actions" [
-            let s o = { orientation = o; location = 0, 0 }
+            let s' x y = { Ship.create with waypoint = x, y }
             test "forward" {
-                action (s North) ('F', 1) =!
-                    {   orientation = North
-                        location = 0, 1 }
-                action (s West) ('F', 1) =!
-                    {   orientation = West
-                        location = -1, 0 } }
-            test "rotate" {
-                rotate North 0 =! North
-                rotate North 90 =! East
-                rotate East 0 =! East
-                rotate West 180 =! East }
+                action (s' 2 1) ('F', 2) =!
+                    {   location = 4, 2
+                        waypoint = 2, 1 }
+                action (s' -1 0) ('F', 1) =!
+                    {   location = -1, 0
+                        waypoint = -1, 0 } }
             test "turns" {
-                action (s East) ('R', 90) =! {
-                    orientation = South
+                action (s' 1 0) ('R', 90) =! {
+                    waypoint    = 0, -1
                     location    = 0, 0 }
-                action (s North) ('R', 90) =! {
-                    orientation = East
-                    location    = 0, 0 }
-                action (s East) ('R', 180) =! {
-                    orientation = West
-                    location    = 0, 0 } }
+                action (s' 0 1) ('R', 90) =! {
+                    location    = 0, 0 
+                    waypoint    = 1, 0 }
+                action (s' -1 0) ('R', 180) =! {
+                    location    = 0, 0
+                    waypoint    = 1, 0 }
+            }
             test "simple moves" {
                 action Ship.create ('N', 1) =! {
-                    orientation = East
+                    waypoint    = 1, 0
                     location    = 0, 1 }
                 action Ship.create ('E', 1) =! {
-                    orientation = East
+                    waypoint    = 1, 0
                     location    = 1, 0 }
                 action Ship.create ('W', 1) =! {
-                    orientation = East
+                    waypoint    = 1, 0
                     location    = -1, 0 }
                 action Ship.create ('S', 1) =! {
-                    orientation = East
+                    waypoint    = 1, 0
                     location    = 0, -1 } } ]
         testList "parse" [
             test "demoinput" {
