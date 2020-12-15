@@ -16,12 +16,12 @@ let all =
             test "replaceAt" {
                 replaceAt 0 '!' "hallo" =! "!allo"
                 replaceAt 4 '!' "hallo" =! "hall!" }
-            test "calcAddresses 1" {
-                calcAddresses "1" |> Set =! Set [1L] }
-            test "calcAddresses X" {
-                calcAddresses "X" |> Set =! Set [1L; 0L] }
-            test "calcAddresses X1X" {
-                calcAddresses "X1X" |> Set =! Set [2L; 3L; 6L; 7L] }
+            test "computeAddresses 1" {
+                computeAddresses "1" |> Set =! Set [1L] }
+            test "computeAddresses X" {
+                computeAddresses "X" |> Set =! Set [1L; 0L] }
+            test "computeAddresses X1X" {
+                computeAddresses "X1X" |> Set =! Set [2L; 3L; 6L; 7L] }
             test "maskAddress" {
                 maskAddress "000X1001X" 42L =! "000X1101X" }
             test "setMultiple" {
