@@ -9,7 +9,7 @@ module Rule =
     let create name a b c d = { name=name; ranges=[a,b; c,d] }
 
 type Notes = {
-    nearbyTickets : int list
+    nearbyTickets : int list list
     rules         : Rule list }
 
 let regexMatchDict pattern input =
@@ -23,26 +23,32 @@ let regexGroups pattern input =
 let regexReplace pattern (replacement:string) input =
     Regex.Replace(input, pattern, replacement)
 
-let split (delimiter:string) (text:string) =
-    text.Split delimiter
-    |> Array.toList
+let regexSplit (delimiter:string) (text:string) =
+    Regex.Split(text, delimiter) |> Array.toList
 
 let toTuple = function
     | [a;b] -> a, b
     | x     -> failwithf "unexpected: %A" x
 
 let parse (input:string) =
-    let p = @"^(?<ru>.+) your ticket: (?<yt>.+) nearby tickets: (?<nt>.+)"
+    let p = @"^(?<ru>.+)#yourticket:#(?<yt>.+)#nearbytickets:#(?<nt>.+)"
     let d =
-        input
-        |> regexReplace @"[\r\n,]+" " "
+        input.Trim()
+        |> regexReplace " " ""
+        |> regexReplace @"\r\n" "#"
         |> regexMatchDict p
-    {   nearbyTickets = d.["nt"] |> split " " |> List.map int
-        rules =
-            d.["ru"]
-            |> regexGroups @"(\w+): (\d+)-(\d+) or (\d+)-(\d+)"
-            |> List.map (fun (name::a::b::c::d::_) ->
-                Rule.create name (int a) (int b) (int c) (int d)) }
+    let nt =
+        d.["nt"]
+        |> regexSplit "#"
+        |> List.map (regexSplit "," >> List.map int)
+    let ru =
+        d.["ru"]
+        |> regexGroups @"(\w+):(\d+)-(\d+)or(\d+)-(\d+)"
+        |> List.map (function 
+            | name::a::b::c::d::_ ->
+                Rule.create name (int a) (int b) (int c) (int d)
+            | x -> failwithf "unexpected %A" x)
+    { nearbyTickets = nt; rules = ru }
 
 let inRange no (min, max) = min <= no && no <= max
 
@@ -54,6 +60,7 @@ let validField (rules:Rule list) no =
 let solve input =
     let notes = parse input
     notes.nearbyTickets
+    |> List.concat
     |> Seq.filter (validField notes.rules >> not)
     |> Seq.sum
 
