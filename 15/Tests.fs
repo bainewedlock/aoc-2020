@@ -12,8 +12,8 @@ let all =
     testList "all" [
         testList "solve" [
             test "demoinput" { solve demoinput =! 436 }
-            test "spokenNumbers" {
-                let sn = spokenNumbers [0;3;6] |> Seq.take 2020 |> Seq.toList
+            test "generateNumbers" {
+                let sn = generateNumbers [0;3;6] |> Seq.take 2020 |> Seq.toList
                 sn |> List.take 10 =! [0;3;6;0;3;3;1;0;4;0]
                 sn |> List.last    =! 436 } ]
         testList "history" [
@@ -62,7 +62,5 @@ let all =
                 h.nextIndex =! 1
                 let h' = h |> History.add 5
                 h'.log =! Map [ 1, SpokenOnce 0; 5, SpokenOnce 1]
-                h'.nextIndex =! 2 } ]
-    ]
-
+                h'.nextIndex =! 2 } ] ]
 

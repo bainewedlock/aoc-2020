@@ -32,25 +32,21 @@ module History =
         match history.log.Item history.lastNumberSpoken with
         | SpokenOnce _                 -> 0
         | SpokenMultipleTimes (i0, i1) -> i1 - i0
+    let init = Seq.fold (fun h n -> add n h) empty
+    let unfolder h =
+        let n = nextNumber h;
+        Some (n, add n h)
 
-let spokenNumbers startingNumbers = seq {
-    let rec loop h = seq {
-        let n = History.nextNumber h
-        yield n
-        yield! loop (History.add n h) }
-
-    let history =
+let generateNumbers startingNumbers = 
+    Seq.append
         startingNumbers
-        |> List.fold (fun h n -> History.add n h) History.empty
-
-    yield! startingNumbers
-    yield! loop history }
+        (History.init startingNumbers |> Seq.unfold History.unfolder)
 
 let genericSolve count (input:string) =
     input.Split ','
     |> Array.toList
     |> List.map int
-    |> spokenNumbers
+    |> generateNumbers
     |> Seq.skip (count-1)
     |> Seq.head
 
