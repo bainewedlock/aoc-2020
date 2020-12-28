@@ -6,10 +6,13 @@ open Expecto
 
 open Solution
 open Demoinput
+open Prettyprint
 
 [<Tests>]
 let all =
     testList "all" [
+        testList "solve part 2" [
+            test "demoinput" { solve2 demoinput =! 848 }]
         testList "solve part 1" [
             test "demoinput" { solve demoinput =! 112 } ]
         testList "step" [
@@ -56,10 +59,10 @@ let all =
         testList "parsing" [
             test "demoinput" {
                 parse demoinput =! Set [
-                   1, 0, 0
-                   2, 1, 0
-                   0, 2, 0
-                   1, 2, 0
-                   2, 2, 0 ] } ] ]
+                   1, 0, 0, 0
+                   2, 1, 0, 0
+                   0, 2, 0, 0
+                   1, 2, 0, 0
+                   2, 2, 0, 0] } ] ]
 
 

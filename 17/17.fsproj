@@ -14,11 +14,10 @@
     </Content>
     <Compile Include="Solution.fs" />
     <Compile Include="Demoinput.fs" />
+    <Compile Include="Prettyprint.fs" />
     <Compile Include="Tests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
-
-  <ItemGroup />
 
   <ItemGroup>
     <PackageReference Include="Expecto" Version="9.0.2" />
