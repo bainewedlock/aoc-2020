@@ -21,13 +21,15 @@ let part1 =
                 verticalLine 0 [ "123"; "456"; "789" ] =! "147"
                 verticalLine 2 [ "123"; "456"; "789" ] =! "369" }
             test "demoinput" {
-                let ts = parse demoinput |> List.map (fun t -> t.No, t.Edges) |> Map
+                let ts =
+                    parse demoinput
+                    |> List.map (fun t -> t.No, t.Edges)
+                    |> Map
                 ts.Count =! 9
-                utest <@ ts.[2311].Contains "..##.#..#." @> // 1st line
-                utest <@ ts.[2311].Contains "##..#....." |> not @> //2nd
-                utest <@ ts.[2311].Contains "..###..###" @> // last
-                utest <@ ts.[2311].Contains "...#.##..#" @> // right
-                utest <@ ts.[2311].Contains ".#####..#." @> // left
-            } ] ]
+                ts.[2311] =! Map [
+                    Top     , "..##.#..#."
+                    Bottom  , "..###..###"
+                    Right   , "...#.##..#"
+                    Left    , ".#####..#." ] } ] ]
 
 

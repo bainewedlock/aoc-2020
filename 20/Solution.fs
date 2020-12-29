@@ -4,7 +4,8 @@ open System
 open System.Text.RegularExpressions
 
 let tileSize = 10
-type Tile = { No: int; Edges : string Set }
+type Edge = Right | Left | Top | Bottom
+type Tile = { No: int; Edges : Map<Edge, string> }
 
 let regexReplace (pattern:string) (replacement:string) (input:string) =
     Regex.Replace(input, pattern, replacement)
@@ -14,11 +15,11 @@ let verticalLine x (lines:string list) =
     |> List.map (fun l -> l.Substring(x, 1))
     |> String.concat ""
 
-let parseEdges (lines:string list) = Set [
-    lines.Head
-    verticalLine (tileSize-1) lines
-    verticalLine 0 lines
-    lines |> List.last ]
+let parseEdges (lines:string list) = Map [
+    Top, lines.Head
+    Left, verticalLine 0 lines
+    Right, verticalLine (tileSize-1) lines
+    Bottom, lines |> List.last ]
 
 let parseTile = function
     | header::lines ->
@@ -26,7 +27,7 @@ let parseTile = function
         { No = no |> int; Edges = parseEdges lines }
     | x             -> failwithf "unexpected: %A" x
 
-let parse (input:string) : Tile list =
+let parse (input:string) =
     input.Split '\n'
     |> Array.toList
     |> List.map (fun s -> s.Trim())
@@ -39,15 +40,19 @@ let reverseString (s:string) =
     |> Seq.toArray
     |> String
 
-let matchingEdges es1 es2 =
-    let es2rev = es2 |> Set.map reverseString
-    Set.intersect es1 (Set.union es2 es2rev)
+let matchingEdges t1 t2 =
+    let es1 = t1.Edges |> Map.toList |> List.map snd |> Set
+    let es2 =
+        [   t2.Edges |> Map.toList |> List.map snd
+            t2.Edges |> Map.toList |> List.map snd |> List.map reverseString]
+        |> List.concat
+        |> Set
+    Set.intersect es1 es2
 
 let matchingTiles t (tiles:Tile List) =
-    let edges = t.Edges
     tiles
     |> List.filter (fun t' ->
-        t'.No <> t.No && (matchingEdges edges t'.Edges).Count > 0)
+        t'.No <> t.No && (matchingEdges t t').Count > 0)
     |> List.map (fun t -> t.No)
     |> Set
 
