@@ -13,12 +13,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Compile Include="Solution.fs" />
+    <Compile Include="Solution2.fs" />
     <Compile Include="Demoinput.fs" />
     <Compile Include="Tests.fs" />
+    <Compile Include="Tests2.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
-
-  <ItemGroup />
 
   <ItemGroup>
     <PackageReference Include="Expecto" Version="9.0.2" />

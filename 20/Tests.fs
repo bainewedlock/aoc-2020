@@ -8,8 +8,8 @@ open Solution
 open Demoinput
 
 [<Tests>]
-let all =
-    testList "all" [
+let part1 =
+    testList "part1" [
         testList "solve" [
             test "demoinput" { solve demoinput =! 20899048083289L }]
         testList "analyze" [
@@ -21,13 +21,13 @@ let all =
                 verticalLine 0 [ "123"; "456"; "789" ] =! "147"
                 verticalLine 2 [ "123"; "456"; "789" ] =! "369" }
             test "demoinput" {
-                let ts = parse demoinput
+                let ts = parse demoinput |> List.map (fun t -> t.No, t.Edges) |> Map
                 ts.Count =! 9
-                utest <@ ts.[2311].Edges.Contains "..##.#..#." @> // 1st line
-                utest <@ ts.[2311].Edges.Contains "##..#....." |> not @> //2nd
-                utest <@ ts.[2311].Edges.Contains "..###..###" @> // last
-                utest <@ ts.[2311].Edges.Contains "...#.##..#" @> // right
-                utest <@ ts.[2311].Edges.Contains ".#####..#." @> // left
+                utest <@ ts.[2311].Contains "..##.#..#." @> // 1st line
+                utest <@ ts.[2311].Contains "##..#....." |> not @> //2nd
+                utest <@ ts.[2311].Contains "..###..###" @> // last
+                utest <@ ts.[2311].Contains "...#.##..#" @> // right
+                utest <@ ts.[2311].Contains ".#####..#." @> // left
             } ] ]
 
 

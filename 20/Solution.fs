@@ -4,7 +4,7 @@ open System
 open System.Text.RegularExpressions
 
 let tileSize = 10
-type Tile = { Edges : string Set }
+type Tile = { No: int; Edges : string Set }
 
 let regexReplace (pattern:string) (replacement:string) (input:string) =
     Regex.Replace(input, pattern, replacement)
@@ -22,16 +22,16 @@ let parseEdges (lines:string list) = Set [
 
 let parseTile = function
     | header::lines ->
-        regexReplace "\D" "" header |> int, { Edges = parseEdges lines }
+        let no = regexReplace "\D" "" header |> int
+        { No = no |> int; Edges = parseEdges lines }
     | x             -> failwithf "unexpected: %A" x
 
-let parse (input:string) : Map<int,Tile> =
+let parse (input:string) : Tile list =
     input.Split '\n'
     |> Array.toList
     |> List.map (fun s -> s.Trim())
     |> List.chunkBySize (tileSize+2)
     |> List.map (List.take (tileSize+1) >> parseTile)
-    |> Map
 
 let reverseString (s:string) =
     s
@@ -43,19 +43,17 @@ let matchingEdges es1 es2 =
     let es2rev = es2 |> Set.map reverseString
     Set.intersect es1 (Set.union es2 es2rev)
 
-let matchingTiles n (tiles:Map<int, Tile>) =
-    let edges = tiles.[n].Edges
+let matchingTiles t (tiles:Tile List) =
+    let edges = t.Edges
     tiles
-    |> Map.filter (fun k v ->
-        k <> n && (matchingEdges edges v.Edges).Count > 0)
-    |> Map.toList
-    |> List.map fst
+    |> List.filter (fun t' ->
+        t'.No <> t.No && (matchingEdges edges t'.Edges).Count > 0)
+    |> List.map (fun t -> t.No)
     |> Set
 
 let analyze tiles =
     tiles
-    |> Map.toSeq
-    |> Seq.map (fst >> (fun t -> t, matchingTiles t tiles))
+    |> Seq.map (fun t -> t.No, matchingTiles t tiles)
     |> Map
 
 let solve =

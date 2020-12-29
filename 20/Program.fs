@@ -9,6 +9,7 @@ let main argv =
     |> printfn "solution 1: %d"
     printfn "(accepted answer: 17032646100079)"
 
+
     //solve2 input
     //|> printfn "solution 2: %A"
     //printfn "(accepted answer: ?)"
