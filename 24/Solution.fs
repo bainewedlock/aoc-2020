@@ -8,6 +8,12 @@ let offset = Map [
     "sw", (-1,  1,  0)
     "ne", ( 1, -1,  0) ]
 
+let toOffset x = offset.Item(x)
+
+let trimStr (s:string) = s.Trim()
+
+let odd x = x % 2 = 1
+
 let parseLine (x:string) =
     let rec loop s = [
         if s = "" then () else
@@ -19,20 +25,12 @@ let parseLine (x:string) =
         yield! loop (s.Substring d.Length) ]
     loop x
 
-let walk xs = 
-    xs
-    |> List.fold (fun (a,b,c) (da,db,dc) -> (a+da,b+db,c+dc)) (0,0,0)
-
-let toOffset x = offset.Item(x)
-
-let trimStr (s:string) = s.Trim()
+let walk = List.reduce (fun (a,b,c) (e,f,g) -> (a+e,b+f,c+g))
 
 let parse (input:string) =
     input.Split '\n'
     |> Array.toList
     |> List.map (trimStr >> parseLine >> List.map toOffset)
-
-let odd x = x % 2 = 1
 
 let solve =
     parse 
